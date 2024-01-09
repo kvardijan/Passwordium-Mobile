@@ -44,5 +44,5 @@ object NetworkServis {
             .build()
     }
 
-    //services
+    val userServis: UserServis by lazy { instance.create(UserServis::class.java) }
 }
