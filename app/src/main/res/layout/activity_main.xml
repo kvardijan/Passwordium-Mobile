@@ -71,7 +71,7 @@
         android:inputType="textPassword"/>
     
     <Button
-        android:id="@+id/brnPrijava"
+        android:id="@+id/btnPrijava"
         app:layout_constraintTop_toBottomOf="@id/passwordTxt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
