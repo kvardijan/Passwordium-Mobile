@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import hr.foi.sis.passwordium.managers.JwtManager
 import hr.foi.sis.passwordium.models.User
 import hr.foi.sis.passwordium.models.UserResponse
 import hr.foi.sis.passwordium.network.NetworkServis
@@ -46,6 +47,11 @@ class MainActivity : AppCompatActivity() {
                     response: Response<UserResponse>
                 ) {
                     Log.i("Response", response.code().toString())
+                    val body = response.body()
+                    if (body != null) {
+                        JwtManager.saveTokens(body)
+                        JwtManager.decodeJWT()
+                    }
                 }
 
                 override fun onFailure(call: Call<UserResponse>, t: Throwable) {

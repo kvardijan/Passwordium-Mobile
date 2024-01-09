@@ -48,4 +48,5 @@ dependencies {
     implementation ("com.journeyapps:zxing-android-embedded:4.2.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.auth0:java-jwt:4.4.0")
 }
