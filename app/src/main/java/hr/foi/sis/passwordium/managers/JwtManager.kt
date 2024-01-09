@@ -1,6 +1,5 @@
 package hr.foi.sis.passwordium.managers
 
-import android.content.pm.ApplicationInfo
 import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -10,9 +9,10 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
 import hr.foi.sis.passwordium.models.UserResponse
 import java.util.TimeZone
+import hr.foi.sis.passwordium.BuildConfig
 
 object JwtManager {
-    var algorithm = Algorithm.HMAC256("")
+    var algorithm = Algorithm.HMAC256(BuildConfig.JWTKEY)
     lateinit var jwt: String
     lateinit var refreshToken: String
     lateinit var refreshTokenExpiresAt: Date
