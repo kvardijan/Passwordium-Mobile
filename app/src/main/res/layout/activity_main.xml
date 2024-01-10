@@ -26,6 +26,13 @@
         app:layout_constraintTop_toBottomOf="@id/topBarText"
         app:layout_constraintStart_toStartOf="parent"
         android:text="odi na qr"/>
+    <Button
+        android:id="@+id/testBtn2"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@id/testBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="odi na fingerprint"/>
     
     <TextView
         android:id="@+id/korimeLabel"

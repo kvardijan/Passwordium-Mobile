@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnPrijava: Button
     private var userServis = NetworkServis.userServis
     private lateinit var testBtn: Button // FOR TESTING
+    private lateinit var testBtn2: Button // FOR TESTING
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -30,6 +31,11 @@ class MainActivity : AppCompatActivity() {
         testBtn = findViewById(R.id.testBtn)
         testBtn.setOnClickListener{
             val intent = Intent(this@MainActivity, QRScanner::class.java)
+            startActivity(intent)
+        }
+        testBtn2 = findViewById(R.id.testBtn2)
+        testBtn2.setOnClickListener{
+            val intent = Intent(this@MainActivity, FingerprintAuthentication::class.java)
             startActivity(intent)
         }
         // FOR TESTING

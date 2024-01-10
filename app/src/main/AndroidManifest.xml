@@ -20,6 +20,9 @@
         android:theme="@style/Theme.Passwordium"
         tools:targetApi="31">
         <activity
+            android:name=".FingerprintAuthentication"
+            android:exported="false" />
+        <activity
             android:name=".QRScanner"
             android:exported="false" />
         <activity
