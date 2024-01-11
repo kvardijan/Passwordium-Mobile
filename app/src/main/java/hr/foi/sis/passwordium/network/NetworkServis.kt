@@ -1,5 +1,6 @@
 package hr.foi.sis.passwordium.network
 
+import hr.foi.sis.passwordium.managers.JwtManager
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -35,6 +36,14 @@ object NetworkServis {
         val client: OkHttpClient = OkHttpClient.Builder()
             .sslSocketFactory(sslContext.socketFactory, trustManager)
             .hostnameVerifier { _, _ -> true }
+            .addInterceptor { chain ->
+                val original = chain.request()
+                val requestBuilder = original.newBuilder()
+                    .header("Authorization", "Bearer " + JwtManager.jwt)//provjeri time i refresh stvari
+                    .method(original.method(), original.body())
+                val request = requestBuilder.build()
+                chain.proceed(request)
+            }
             .build()
 
         Retrofit.Builder()
@@ -45,4 +54,5 @@ object NetworkServis {
     }
 
     val userServis: UserServis by lazy { instance.create(UserServis::class.java) }
+    val keySerivs: KeyServis by lazy { instance.create(KeyServis::class.java)}
 }
