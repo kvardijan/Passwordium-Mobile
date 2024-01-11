@@ -36,14 +36,6 @@ object NetworkServis {
         val client: OkHttpClient = OkHttpClient.Builder()
             .sslSocketFactory(sslContext.socketFactory, trustManager)
             .hostnameVerifier { _, _ -> true }
-            .addInterceptor { chain ->
-                val original = chain.request()
-                val requestBuilder = original.newBuilder()
-                    .header("Authorization", "Bearer " + JwtManager.jwt)//provjeri time i refresh stvari
-                    .method(original.method(), original.body())
-                val request = requestBuilder.build()
-                chain.proceed(request)
-            }
             .build()
 
         Retrofit.Builder()

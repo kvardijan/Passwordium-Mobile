@@ -28,14 +28,26 @@ object JwtManager {
     fun saveTokens(body: UserResponse){
         jwt = body.jwt
         refreshToken = body.refreshToken
-        refreshTokenExpiresAt = parseExpirationFromStringToDate(body.refreshTokenExpiresAt)
+        refreshTokenExpiresAt = parseRefreshTokenExpirationFromStringToDate(body.refreshTokenExpiresAt)
     }
 
-    fun parseExpirationFromStringToDate(date: String): Date {
+    fun parseRefreshTokenExpirationFromStringToDate(date: String): Date {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS'Z'", Locale("hr", "HR"))
         inputFormat.timeZone = TimeZone.getTimeZone("UTC")
         Log.i("JWT", inputFormat.parse(date).toString())
         return inputFormat.parse(date)
     }
 
+    fun checkIfJwtExpired(): Boolean {
+        val decodedJWT: DecodedJWT = JWT.require(algorithm).build().verify(jwt)
+        val exp = decodedJWT.getClaim("exp").asLong()
+        val currentTimeMilliseconds = System.currentTimeMillis() / 1000
+        return exp < currentTimeMilliseconds
+    }
+
+    fun checkIfRefreshTokenExpired(): Boolean {
+        val refreshTokenExpiresAtTimestamp: Long = refreshTokenExpiresAt.time / 1000
+        val currentTimeMilliseconds = System.currentTimeMillis() / 1000
+        return refreshTokenExpiresAtTimestamp < currentTimeMilliseconds
+    }
 }

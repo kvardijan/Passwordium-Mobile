@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import hr.foi.sis.passwordium.managers.BiometricManager
+import hr.foi.sis.passwordium.managers.JwtManager
 
 class FingerprintAuthentication : AppCompatActivity() {
     private lateinit var btnStore: Button // FOR TESTING
@@ -23,6 +24,8 @@ class FingerprintAuthentication : AppCompatActivity() {
             val isVerified = BiometricManager.verifySignatureWithPublicKey(dataToSign, signature ?: "")
             Log.i("Verification", "Signature verification result: $isVerified")
         }
+        JwtManager.checkIfJwtExpired()
+        JwtManager.checkIfRefreshTokenExpired()
         // FOR TESTING
     }
 }

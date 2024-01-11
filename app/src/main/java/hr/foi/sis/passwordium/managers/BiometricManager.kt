@@ -1,13 +1,11 @@
 package hr.foi.sis.passwordium.managers
 
-import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import android.util.Log
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.security.*
-import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import java.util.*
 
@@ -55,7 +53,6 @@ object BiometricManager {
         val keyPair = getKeyPair()
         val publicKey = keyPair?.public ?: return null
         val publicKeyBytes = publicKey.encoded
-        Log.i("key", publicKey.toString())
         val encodedPublicKey = Base64.encodeToString(publicKeyBytes, Base64.DEFAULT)
         return encodedPublicKey
     }
@@ -90,7 +87,6 @@ object BiometricManager {
                 val keyFactory = KeyFactory.getInstance("EC")
                 val keySpec = X509EncodedKeySpec(Base64.decode(publicKey, Base64.DEFAULT))
                 val decodedPublicKey = keyFactory.generatePublic(keySpec)
-
                 val verifySignature = Signature.getInstance("SHA256withECDSA")
                 verifySignature.initVerify(decodedPublicKey)
                 verifySignature.update(data.toByteArray())
