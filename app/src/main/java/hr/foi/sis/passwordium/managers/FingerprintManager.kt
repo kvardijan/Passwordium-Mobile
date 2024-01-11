@@ -9,7 +9,7 @@ import java.security.*
 import java.security.spec.X509EncodedKeySpec
 import java.util.*
 
-object BiometricManager {
+object FingerprintManager {
 
     private const val KEYSTORE_ALIAS = "SecureKeyStore"
     private const val PROVIDER_BC = "BC"

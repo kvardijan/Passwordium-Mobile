@@ -4,4 +4,5 @@
     <string name="korisni_ko_ime">Korisničko ime</string>
     <string name="lozinka">Lozinka</string>
     <string name="prijavi_me">Prijavi me</string>
+    <string name="prijava_otiskom_prsta">Prijava otiskom prsta</string>
 </resources>

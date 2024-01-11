@@ -27,17 +27,10 @@
         app:layout_constraintStart_toStartOf="parent"
         android:text="odi na qr"/>
     <Button
-        android:id="@+id/testBtn2"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@id/testBtn"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="odi na fingerprint"/>
-    <Button
         android:id="@+id/testBtn3"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@id/testBtn2"
+        app:layout_constraintTop_toBottomOf="@id/testBtn"
         app:layout_constraintStart_toStartOf="parent"
         android:text="daj jwt test"/>
     
@@ -51,6 +44,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="200dp"
         android:textSize="20sp"
+        android:labelFor="@id/korimeTxt"
         />
 
     <EditText
@@ -60,7 +54,8 @@
         android:layout_height="60dp"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:inputType="text"/>
 
     <TextView
         android:id="@+id/passwordLabel"
@@ -72,6 +67,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/korimeTxt"
         android:textSize="20sp"
+        android:labelFor="@+id/passwordTxt"
         />
 
     <EditText
@@ -93,6 +89,17 @@
         android:layout_marginTop="40dp"
         android:layout_height="60dp"
         android:text="@string/prijavi_me"
+        android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/btnPrijavaFingerprint"
+        app:layout_constraintTop_toBottomOf="@id/btnPrijava"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_height="60dp"
+        android:text="@string/prijava_otiskom_prsta"
         android:textSize="20sp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
