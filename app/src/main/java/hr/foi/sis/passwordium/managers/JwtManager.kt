@@ -22,13 +22,13 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 object JwtManager {
-    var algorithm = Algorithm.HMAC256(BuildConfig.JWTKEY)
-    lateinit var jwt: String
-    lateinit var refreshToken: String
-    lateinit var refreshTokenExpiresAt: Date
-    lateinit var userId: String
-    lateinit var username: String
-    lateinit var jwtExpiresAt: Date
+    private var algorithm = Algorithm.HMAC256(BuildConfig.JWTKEY)
+    private lateinit var jwt: String
+    private lateinit var refreshToken: String
+    private lateinit var refreshTokenExpiresAt: Date
+    private lateinit var userId: String
+    private lateinit var username: String
+    private lateinit var jwtExpiresAt: Date
 
     fun decodeJWT(){
         val decodedJWT: DecodedJWT = JWT.require(algorithm).build().verify(jwt)

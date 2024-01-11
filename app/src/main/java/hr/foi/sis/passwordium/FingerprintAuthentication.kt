@@ -18,14 +18,14 @@ class FingerprintAuthentication : AppCompatActivity() {
         val dataToSign = "a"
         btnStore = findViewById(R.id.btnStore)
         btnStore.setOnClickListener {
+            //JwtManager.checkIfJwtExpired()
+            //JwtManager.checkIfRefreshTokenExpired()
             val signature = BiometricManager.signDataWithPrivateKey(dataToSign)
             Log.i("Signature", signature ?: "Signing failed")
 
             val isVerified = BiometricManager.verifySignatureWithPublicKey(dataToSign, signature ?: "")
             Log.i("Verification", "Signature verification result: $isVerified")
         }
-        JwtManager.checkIfJwtExpired()
-        JwtManager.checkIfRefreshTokenExpired()
         // FOR TESTING
     }
 }

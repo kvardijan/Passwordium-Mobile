@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import hr.foi.sis.passwordium.managers.BiometricManager
 import hr.foi.sis.passwordium.managers.JwtManager
 import hr.foi.sis.passwordium.models.User
 import hr.foi.sis.passwordium.models.UserResponse
@@ -26,6 +27,13 @@ class MainActivity : AppCompatActivity() {
         btnPrijava = findViewById(R.id.btnPrijava)
         btnPrijava.setOnClickListener{
             sendLoginRequest()
+        }
+        if (checkIfPublicKeyExists()){
+            //redirect to fingerprint
+            val intent = Intent(this@MainActivity, FingerprintAuthentication::class.java)
+            startActivity(intent)
+        }else{
+            //stay and login
         }
 
         // FOR TESTING
@@ -80,5 +88,10 @@ class MainActivity : AppCompatActivity() {
 
             }
         )
+    }
+
+    fun checkIfPublicKeyExists(): Boolean{
+        val publicKey = BiometricManager.getPublicKey()
+        return publicKey != null
     }
 }
