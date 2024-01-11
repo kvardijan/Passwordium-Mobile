@@ -33,6 +33,13 @@
         app:layout_constraintTop_toBottomOf="@id/testBtn"
         app:layout_constraintStart_toStartOf="parent"
         android:text="daj jwt test"/>
+    <Button
+        android:id="@+id/testBtn4"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@id/testBtn3"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="napravi provjeru key"/>
     
     <TextView
         android:id="@+id/korimeLabel"
@@ -88,7 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_marginTop="40dp"
         android:layout_height="60dp"
-        android:text="@string/prijavi_me"
+        android:text="@string/registriraj_otisak_prsta"
         android:textSize="20sp"/>
 
     <Button

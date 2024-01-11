@@ -3,6 +3,7 @@
     <string name="passwordium">Passwordium</string>
     <string name="korisni_ko_ime">Korisničko ime</string>
     <string name="lozinka">Lozinka</string>
-    <string name="prijavi_me">Prijavi me</string>
     <string name="prijava_otiskom_prsta">Prijava otiskom prsta</string>
+    <string name="registriraj_otisak_prsta">Registriraj otisak prsta</string>
+    <string name="prijavi_me">Prijavi me</string>
 </resources>

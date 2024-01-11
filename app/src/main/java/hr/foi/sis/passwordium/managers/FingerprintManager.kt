@@ -30,7 +30,7 @@ object FingerprintManager {
         if (aliases.toList().firstOrNull { it == KEYSTORE_ALIAS } == null) {
             val kpg: KeyPairGenerator = KeyPairGenerator.getInstance(
                 KeyProperties.KEY_ALGORITHM_EC,
-                PROVIDER_BC
+                "AndroidKeyStore"
             )
             val parameterSpec: KeyGenParameterSpec = KeyGenParameterSpec.Builder(
                 KEYSTORE_ALIAS,
@@ -98,5 +98,14 @@ object FingerprintManager {
         } else {
             false
         }
+    }
+
+    fun doesKeyPairExist(): Boolean {
+        val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
+            load(null)
+        }
+        val aliases: Enumeration<String> = ks.aliases()
+
+        return aliases.toList().any { it == KEYSTORE_ALIAS }
     }
 }

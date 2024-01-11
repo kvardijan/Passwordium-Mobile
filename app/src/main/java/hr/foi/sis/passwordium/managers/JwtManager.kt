@@ -112,4 +112,13 @@ object JwtManager {
             }
         }
     }
+
+    fun logout(){
+        jwt = ""
+        refreshToken = ""
+        refreshTokenExpiresAt = Date(0)
+        userId = ""
+        username = ""
+        jwtExpiresAt = Date(0)
+    }
 }
