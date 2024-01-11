@@ -33,6 +33,13 @@
         app:layout_constraintTop_toBottomOf="@id/testBtn"
         app:layout_constraintStart_toStartOf="parent"
         android:text="odi na fingerprint"/>
+    <Button
+        android:id="@+id/testBtn3"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@id/testBtn2"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="daj jwt test"/>
     
     <TextView
         android:id="@+id/korimeLabel"

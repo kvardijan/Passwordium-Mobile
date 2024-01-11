@@ -12,8 +12,14 @@ import java.util.TimeZone
 import hr.foi.sis.passwordium.BuildConfig
 import hr.foi.sis.passwordium.models.TokenRefresh
 import hr.foi.sis.passwordium.network.NetworkServis
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Response
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 object JwtManager {
     var algorithm = Algorithm.HMAC256(BuildConfig.JWTKEY)
@@ -22,11 +28,13 @@ object JwtManager {
     lateinit var refreshTokenExpiresAt: Date
     lateinit var userId: String
     lateinit var username: String
+    lateinit var jwtExpiresAt: Date
 
     fun decodeJWT(){
         val decodedJWT: DecodedJWT = JWT.require(algorithm).build().verify(jwt)
         userId = decodedJWT.getClaim("id").asString()
         username = decodedJWT.getClaim("unique_name").asString()
+        jwtExpiresAt = decodedJWT.expiresAt
     }
 
     fun saveTokens(body: UserResponse){
@@ -43,38 +51,65 @@ object JwtManager {
     }
 
     fun checkIfJwtExpired(): Boolean {
-        val decodedJWT: DecodedJWT = JWT.require(algorithm).build().verify(jwt)
-        val exp = decodedJWT.getClaim("exp").asLong()
-        val currentTimeMilliseconds = System.currentTimeMillis() / 1000
-        return exp < currentTimeMilliseconds
+        val exp = jwtExpiresAt.time / 1000
+        val currentTime = System.currentTimeMillis() / 1000
+        Log.i("jwt", "jwt expiration:"+exp.toString())
+        Log.i("jwt", "current time:"+currentTime.toString())
+        return exp < currentTime
     }
 
     fun checkIfRefreshTokenExpired(): Boolean {
-        val refreshTokenExpiresAtTimestamp: Long = refreshTokenExpiresAt.time / 1000
-        val currentTimeMilliseconds = System.currentTimeMillis() / 1000
-        return refreshTokenExpiresAtTimestamp < currentTimeMilliseconds
+        val refreshTokenExpiresAtTimestamp = refreshTokenExpiresAt.time / 1000
+        val currentTime = System.currentTimeMillis() / 1000
+        return refreshTokenExpiresAtTimestamp < currentTime
     }
 
-    fun generateNewJwt(){
-        val tokenServis = NetworkServis.tokenSerivs
-        val tokenRefresh = TokenRefresh(refreshToken)
-        tokenServis.generateNewJwt(tokenRefresh).enqueue(
-            object : retrofit2.Callback<UserResponse>{
-                override fun onResponse(
-                    call: Call<UserResponse>,
-                    response: Response<UserResponse>
-                ) {
-                    Log.i("Response", response.code().toString())
-                    val body = response.body()
-                    if (body != null) {
-                        saveTokens(body)
-                        decodeJWT()
+    suspend fun generateNewJwt(): UserResponse? {
+        return suspendCoroutine { continuation ->
+            val tokenServis = NetworkServis.tokenSerivs
+            val tokenRefresh = TokenRefresh(refreshToken)
+            val jwtToRefresh = "Bearer $jwt"
+            tokenServis.generateNewJwt(jwtToRefresh,tokenRefresh).enqueue(
+                object : retrofit2.Callback<UserResponse> {
+                    override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+                        Log.i("Response", response.code().toString())
+                        val body = response.body()
+                        if (body != null) {
+                            saveTokens(body)
+                            decodeJWT()
+                            continuation.resume(body)
+                        } else {
+                            continuation.resume(null)
+                        }
+                    }
+
+                    override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                        Log.i("Response", t.toString())
+                        continuation.resume(null)
+                    }
+                })
+        }
+    }
+
+    fun giveJwtToken(callback: (String?) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = if (checkIfJwtExpired()) {
+                if (checkIfRefreshTokenExpired()) {
+                    null // or return some default value
+                } else {
+                    val response = generateNewJwt()
+                    response?.let {
+                        // The generateNewJwt has completed, and jwt is updated
+                        jwt
                     }
                 }
+            } else {
+                jwt
+            }
 
-                override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                    Log.i("Response", t.toString())
-                }
-            })
+            withContext(Dispatchers.Main) {
+                callback(result)
+            }
+        }
     }
 }

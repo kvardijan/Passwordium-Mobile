@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     private var userServis = NetworkServis.userServis
     private lateinit var testBtn: Button // FOR TESTING
     private lateinit var testBtn2: Button // FOR TESTING
+    private lateinit var testBtn3: Button // FOR TESTING
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,6 +38,19 @@ class MainActivity : AppCompatActivity() {
         testBtn2.setOnClickListener{
             val intent = Intent(this@MainActivity, FingerprintAuthentication::class.java)
             startActivity(intent)
+        }
+        testBtn3 = findViewById(R.id.testBtn3)
+        testBtn3.setOnClickListener{
+            JwtManager.giveJwtToken { jwtToken ->
+                if (jwtToken != null) {
+                    // use jwt
+                    Log.i("jwt", "ovo je jwt:"+jwtToken)
+                } else {
+                    // Go back to login screen
+                    Log.i("JwtToken", "Token is null")
+                }
+            }
+
         }
         // FOR TESTING
     }
