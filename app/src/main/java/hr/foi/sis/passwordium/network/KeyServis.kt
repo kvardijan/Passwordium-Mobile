@@ -9,5 +9,5 @@ import retrofit2.http.POST
 
 interface KeyServis {
     @POST("Users/PublicKey")
-    fun storePublicKey(@Header("Authorization") authorization: String, @Body key: String): Call<PublicKeyResponse>
+    fun storePublicKey(@Header("Authorization") authorization: String, @Body key: PublicKey): Call<PublicKeyResponse>
 }

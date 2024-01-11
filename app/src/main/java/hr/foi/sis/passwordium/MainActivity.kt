@@ -15,6 +15,7 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import hr.foi.sis.passwordium.managers.FingerprintManager
 import hr.foi.sis.passwordium.managers.JwtManager
+import hr.foi.sis.passwordium.models.PublicKey
 import hr.foi.sis.passwordium.models.PublicKeyResponse
 import hr.foi.sis.passwordium.models.User
 import hr.foi.sis.passwordium.models.UserResponse
@@ -162,35 +163,38 @@ class MainActivity : AppCompatActivity() {
                         JwtManager.saveTokens(body)
                         JwtManager.decodeJWT()
 
-                        var jwt = ""
                         JwtManager.giveJwtToken { jwtToken ->
                             if (jwtToken != null) {
-                                jwt = jwtToken
+                                val jwtAuthorization = "Bearer $jwtToken"
+                                Log.i("response", "ovo je token koji saljem: "+jwtAuthorization)
+                                val publicKey = PublicKey(FingerprintManager.getPublicKey()!!)
+                                keyServis.storePublicKey(jwtAuthorization, publicKey).enqueue(
+                                    object : retrofit2.Callback<PublicKeyResponse>{
+                                        override fun onResponse(
+                                            call: Call<PublicKeyResponse>,
+                                            response: Response<PublicKeyResponse>
+                                        ) {
+                                            Log.i("response", "SUCCESSfully saved public key")
+                                            val test = response.code()
+                                            Log.i("response", "ovo je response code: "+test)
+                                            JwtManager.logout()
+                                            Toast.makeText(this@MainActivity, "Login with fingerprint", Toast.LENGTH_LONG)
+                                                .show()
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<PublicKeyResponse>,
+                                            t: Throwable
+                                        ) {
+                                            Log.i("response", "Storing of key was not successful")
+                                        }
+                                    }
+                                )
                             } else {
                                 Log.i("JwtToken", "Token is null")
                             }
                         }
-                        val jwtToken = "Bearer $jwt"
-                        keyServis.storePublicKey(jwtToken, FingerprintManager.getPublicKey()!!).enqueue(
-                            object : retrofit2.Callback<PublicKeyResponse>{
-                                override fun onResponse(
-                                    call: Call<PublicKeyResponse>,
-                                    response: Response<PublicKeyResponse>
-                                ) {
-                                    Log.i("response", "SUCCESSfully saved public key")
-                                    JwtManager.logout()
-                                    Toast.makeText(this@MainActivity, "Login with fingerprint", Toast.LENGTH_LONG)
-                                        .show()
-                                }
 
-                                override fun onFailure(
-                                    call: Call<PublicKeyResponse>,
-                                    t: Throwable
-                                ) {
-                                    Log.i("response", "Storing of key was not successful")
-                                }
-                            }
-                        )
                     }
                 }
 

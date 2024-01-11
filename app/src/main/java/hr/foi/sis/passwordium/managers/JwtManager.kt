@@ -23,7 +23,7 @@ import kotlin.coroutines.suspendCoroutine
 
 object JwtManager {
     private var algorithm = Algorithm.HMAC256(BuildConfig.JWTKEY)
-    private lateinit var jwt: String
+     lateinit var jwt: String
     private lateinit var refreshToken: String
     private lateinit var refreshTokenExpiresAt: Date
     private lateinit var userId: String
