@@ -47,4 +47,5 @@ object NetworkServis {
 
     val userServis: UserServis by lazy { instance.create(UserServis::class.java) }
     val keySerivs: KeyServis by lazy { instance.create(KeyServis::class.java)}
+    val tokenSerivs: TokenServis by lazy { instance.create(TokenServis::class.java)}
 }

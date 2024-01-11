@@ -10,6 +10,10 @@ import com.auth0.jwt.interfaces.DecodedJWT
 import hr.foi.sis.passwordium.models.UserResponse
 import java.util.TimeZone
 import hr.foi.sis.passwordium.BuildConfig
+import hr.foi.sis.passwordium.models.TokenRefresh
+import hr.foi.sis.passwordium.network.NetworkServis
+import retrofit2.Call
+import retrofit2.Response
 
 object JwtManager {
     var algorithm = Algorithm.HMAC256(BuildConfig.JWTKEY)
@@ -49,5 +53,28 @@ object JwtManager {
         val refreshTokenExpiresAtTimestamp: Long = refreshTokenExpiresAt.time / 1000
         val currentTimeMilliseconds = System.currentTimeMillis() / 1000
         return refreshTokenExpiresAtTimestamp < currentTimeMilliseconds
+    }
+
+    fun generateNewJwt(){
+        val tokenServis = NetworkServis.tokenSerivs
+        val tokenRefresh = TokenRefresh(refreshToken)
+        tokenServis.generateNewJwt(tokenRefresh).enqueue(
+            object : retrofit2.Callback<UserResponse>{
+                override fun onResponse(
+                    call: Call<UserResponse>,
+                    response: Response<UserResponse>
+                ) {
+                    Log.i("Response", response.code().toString())
+                    val body = response.body()
+                    if (body != null) {
+                        saveTokens(body)
+                        decodeJWT()
+                    }
+                }
+
+                override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                    Log.i("Response", t.toString())
+                }
+            })
     }
 }
