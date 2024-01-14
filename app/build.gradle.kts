@@ -58,4 +58,6 @@ dependencies {
     implementation ("com.auth0:java-jwt:4.4.0")
     implementation ("org.bouncycastle:bcprov-jdk15on:1.68")
     implementation ("androidx.biometric:biometric:1.2.0-alpha03")
+
+    implementation("me.gosimple:nbvcxz:1.5.1")
 }
