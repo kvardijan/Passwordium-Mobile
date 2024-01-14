@@ -1,10 +1,6 @@
 package hr.foi.sis.passwordium
 
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.os.StrictMode
-import android.os.StrictMode.ThreadPolicy
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
@@ -15,6 +11,9 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import hr.foi.sis.passwordium.managers.FingerprintManager
 import hr.foi.sis.passwordium.managers.JwtManager
+import hr.foi.sis.passwordium.models.Challenge
+import hr.foi.sis.passwordium.models.ChallengeResponse
+import hr.foi.sis.passwordium.models.ChallengeVerification
 import hr.foi.sis.passwordium.models.PublicKey
 import hr.foi.sis.passwordium.models.PublicKeyResponse
 import hr.foi.sis.passwordium.models.User
@@ -35,9 +34,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
     private var isFingerprintLoginEnabled: Boolean = false
     private val secProvider = "BC"
-    private lateinit var testBtn: Button // FOR TESTING
-    private lateinit var testBtn3: Button // FOR TESTING
-    private lateinit var testBtn4: Button // FOR TESTING
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +73,8 @@ class MainActivity : AppCompatActivity() {
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
                 Log.i("bio", "AUTHENTICATION SUCCESS")
+                //tu ide kad fingerprint dobar
+                signServerChallenge()
             }
 
             override fun onAuthenticationFailed() {
@@ -110,40 +108,55 @@ class MainActivity : AppCompatActivity() {
                     .show()
             }
         }
+    }
 
-        // FOR TESTING
-        testBtn = findViewById(R.id.testBtn)
-        testBtn.setOnClickListener{
-            val intent = Intent(this@MainActivity, QRScanner::class.java)
-            startActivity(intent)
-        }
-        testBtn4 = findViewById(R.id.testBtn4)
-        testBtn4.setOnClickListener{
-            val a = FingerprintManager.getPublicKey()
-            Log.i("a", a.toString())
-            val signa = FingerprintManager.signDataWithPrivateKey("a")
-            val bo = FingerprintManager.verifySignatureWithPublicKey("a",signa!!)
-            Log.i("a", bo.toString())
-        }
-        testBtn3 = findViewById(R.id.testBtn3)
-        testBtn3.setOnClickListener{
-            JwtManager.giveJwtToken { jwtToken ->
-                if (jwtToken != null) {
-                    // use jwt
-                    Log.i("jwt", "ovo je jwt:"+jwtToken)
-                } else {
-                    // Go back to login screen
-                    Log.i("JwtToken", "Token is null")
+    fun signServerChallenge(){
+        val challenge = Challenge(FingerprintManager.getPublicKey()!!)
+        Log.i("challenge", "key za get challenge:"+challenge.publicKey)
+        keyServis.getChallenge(challenge).enqueue(
+            object : retrofit2.Callback<ChallengeResponse>{
+                override fun onResponse(
+                    call: Call<ChallengeResponse>,
+                    response: Response<ChallengeResponse>
+                ) {
+                    val body = response.body()
+                    Log.i("challenge", "code"+response.code().toString())
+                    if (body != null){
+                        Log.i("challenge", body.message)
+                        val signature = FingerprintManager.signDataWithPrivateKey(body.message)
+                        val challengeVerification = ChallengeVerification(signature!!, FingerprintManager.getPublicKey()!!)
+
+                        keyServis.verifyChallenge(challengeVerification).enqueue(
+                            object : retrofit2.Callback<UserResponse>{
+                                override fun onResponse(
+                                    call: Call<UserResponse>,
+                                    response: Response<UserResponse>
+                                ) {
+                                    val verificationBody = response.body()
+                                    Log.i("challenge", "challenge verification respose code:"+response.code())
+                                    if (verificationBody != null){
+                                        JwtManager.saveTokens(verificationBody)
+                                        JwtManager.decodeJWT()
+                                        //TODO: REROUTE TO MAIN PASSWORD VIEW
+                                    }
+                                }
+
+                                override fun onFailure(
+                                    call: Call<UserResponse>,
+                                    t: Throwable
+                                ) {
+                                    Log.i("challenge", "challenge verification failed")
+                                }
+                            }
+                        )
+                    }
+                }
+
+                override fun onFailure(call: Call<ChallengeResponse>, t: Throwable) {
+                    Log.i("challenge", "challenge not received")
                 }
             }
-
-        }
-        //val signature = FingerprintManager.signDataWithPrivateKey(dataToSign)
-        //Log.i("Signature", signature ?: "Signing failed")
-
-        //val isVerified = FingerprintManager.verifySignatureWithPublicKey(dataToSign, signature ?: "")
-        //Log.i("Verification", "Signature verification result: $isVerified")
-        // FOR TESTING
+        )
     }
 
     fun registerFingerprintForLogin(){
@@ -168,6 +181,7 @@ class MainActivity : AppCompatActivity() {
                                 val jwtAuthorization = "Bearer $jwtToken"
                                 Log.i("response", "ovo je token koji saljem: "+jwtAuthorization)
                                 val publicKey = PublicKey(FingerprintManager.getPublicKey()!!)
+                                Log.i("registerKey", "key koji se sprema u bazu:"+FingerprintManager.getPublicKey())
                                 keyServis.storePublicKey(jwtAuthorization, publicKey).enqueue(
                                     object : retrofit2.Callback<PublicKeyResponse>{
                                         override fun onResponse(
@@ -178,8 +192,10 @@ class MainActivity : AppCompatActivity() {
                                             val test = response.code()
                                             Log.i("response", "ovo je response code: "+test)
                                             JwtManager.logout()
-                                            Toast.makeText(this@MainActivity, "Login with fingerprint", Toast.LENGTH_LONG)
+                                            Toast.makeText(this@MainActivity, "Omogućena prijava otiskom prsta", Toast.LENGTH_LONG)
                                                 .show()
+                                            isFingerprintLoginEnabled = true
+                                            btnPrijava.text = getString(R.string.prijavi_me)
                                         }
 
                                         override fun onFailure(
@@ -222,6 +238,7 @@ class MainActivity : AppCompatActivity() {
                     if (body != null) {
                         JwtManager.saveTokens(body)
                         JwtManager.decodeJWT()
+                        //TODO: REROUTE TO MAIN PASSWORD VIEW
                     }
                 }
 
