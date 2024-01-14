@@ -1,3 +1,4 @@
+import java.util.*
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -14,9 +15,15 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "JWTKEY", properties.getProperty("JWTKEY"))
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    buildFeatures {
+        buildConfig = true
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -46,4 +53,9 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation ("com.google.zxing:core:3.4.1")
     implementation ("com.journeyapps:zxing-android-embedded:4.2.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.auth0:java-jwt:4.4.0")
+    implementation ("org.bouncycastle:bcprov-jdk15on:1.68")
+    implementation ("androidx.biometric:biometric:1.2.0-alpha03")
 }
