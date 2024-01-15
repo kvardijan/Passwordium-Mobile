@@ -7,6 +7,7 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import hr.foi.sis.passwordium.managers.FingerprintManager
 import hr.foi.sis.passwordium.managers.JwtManager
 import hr.foi.sis.passwordium.models.AccountResponse
 import hr.foi.sis.passwordium.network.NetworkServis
@@ -47,11 +48,14 @@ class UserAccountsActivity: AppCompatActivity() {
         recyclerView.adapter = adapter
         */
         btnExit.setOnClickListener {
-
+            JwtManager.logout()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
 
         btnGenToken.setOnClickListener {
-
+            val intent = Intent(this, QRScanner::class.java)
+            startActivity(intent)
         }
 
         btnAddNew.setOnClickListener {
