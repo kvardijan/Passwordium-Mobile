@@ -2,6 +2,8 @@ package hr.foi.sis.passwordium.network
 
 import hr.foi.sis.passwordium.models.Account
 import hr.foi.sis.passwordium.models.AccountResponse
+import hr.foi.sis.passwordium.models.CheckPasswordsRequest
+import hr.foi.sis.passwordium.models.CheckPasswordsResponse
 import hr.foi.sis.passwordium.models.EditAccountBody
 import hr.foi.sis.passwordium.models.MessageOnlyResponse
 import retrofit2.Call
@@ -25,4 +27,7 @@ interface AccountServis {
 
     @DELETE("Accounts/{id}")
     fun deleteAccount(@Header("Authorization") authorization: String, @Path("id") accountId: Int): Call<MessageOnlyResponse>
+
+    @POST("Accounts/CheckPasswords")
+    fun checkPassword(@Header("Authorization") authorization: String, @Body checkPasswordsRequest: List<CheckPasswordsRequest>): Call<List<CheckPasswordsResponse>>
 }
