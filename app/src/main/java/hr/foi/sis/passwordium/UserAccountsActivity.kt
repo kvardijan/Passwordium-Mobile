@@ -7,6 +7,7 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.navigation.NavigationBarView
 import hr.foi.sis.passwordium.managers.FingerprintManager
 import hr.foi.sis.passwordium.managers.JwtManager
 import hr.foi.sis.passwordium.models.AccountResponse
@@ -16,10 +17,6 @@ import retrofit2.Response
 
 class UserAccountsActivity: AppCompatActivity() {
 
-    private lateinit var btnExit: ImageButton
-    private lateinit var btnGenToken: ImageButton
-    private lateinit var btnAddNew: ImageButton
-
     private lateinit var recyclerView : RecyclerView
 
     private var accountServis = NetworkServis.accountServis
@@ -28,40 +25,38 @@ class UserAccountsActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_accounts)
 
-        btnExit = findViewById(R.id.btnExit)
-        btnGenToken = findViewById(R.id.btnGenToken)
-        btnAddNew = findViewById(R.id.btnAddNew)
+        val navigation = findViewById<NavigationBarView>(R.id.bottom_navigation)
+        navigation.setOnItemSelectedListener { item ->
+            when(item.itemId) {
+                R.id.logout-> {
+                    JwtManager.logout()
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.password_check -> {
+                    // Respond to navigation item 2 click
+                    true
+                }
+                R.id.TOTP-> {
+                    val intent = Intent(this, QRScanner::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.new_account -> {
+                    val intent = Intent(this, AddAccountActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
 
         recyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         //dohvatiti s backenda (treba implementirati)
         sendGetAccountsRequest()
-
-        val accountItems = listOf(
-            AccountItem("Website 1", "Username 1", "123456","www.example1.com"),
-            AccountItem("Website 2", "Username 2", "123456",""),
-            // Add more items as needed
-        )
-        /*
-        val adapter = AccountAdapter(accountItems,this)
-        recyclerView.adapter = adapter
-        */
-        btnExit.setOnClickListener {
-            JwtManager.logout()
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
-
-        btnGenToken.setOnClickListener {
-            val intent = Intent(this, QRScanner::class.java)
-            startActivity(intent)
-        }
-
-        btnAddNew.setOnClickListener {
-            val intent = Intent(this, AddAccountActivity::class.java)
-            startActivity(intent)
-        }
     }
 
     fun sendGetAccountsRequest(){
