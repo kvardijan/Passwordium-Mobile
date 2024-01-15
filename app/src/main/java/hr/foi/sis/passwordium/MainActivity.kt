@@ -147,6 +147,8 @@ class MainActivity : AppCompatActivity() {
                                         JwtManager.saveTokens(verificationBody)
                                         JwtManager.decodeJWT()
                                         //TODO: REROUTE TO MAIN PASSWORD VIEW
+                                        val intent = Intent(this@MainActivity,UserAccountsActivity::class.java)
+                                        startActivity(intent)
                                     }
                                 }
 
@@ -248,6 +250,8 @@ class MainActivity : AppCompatActivity() {
                         JwtManager.saveTokens(body)
                         JwtManager.decodeJWT()
                         //TODO: REROUTE TO MAIN PASSWORD VIEW
+                        val intent = Intent(this@MainActivity,UserAccountsActivity::class.java)
+                        startActivity(intent)
                     }
                 }
 

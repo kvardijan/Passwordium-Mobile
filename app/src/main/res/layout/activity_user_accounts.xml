@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="700dp"
+        app:layout_constraintTop_toBottomOf="@id/topBarText"
+        tools:layout_editor_absoluteX="16dp"
+        tools:listitem="@layout/account_card" />
+
+    <TextView
+        android:id="@+id/topBarText"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_view"
+        android:background="#808080"
+        android:text="@string/passwordium"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:paddingStart="10dp"
+        tools:ignore="RtlSymmetry"
+        android:textColor="@color/black"/>
+
+    <FrameLayout
+        android:id="@+id/framework1"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/framework2"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+
+        <ImageButton
+            android:id="@+id/btnExit"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:text="Option 1"
+            android:background="@drawable/baseline_logout_24"
+            android:layout_marginBottom="0dp"
+            app:tint="#fff" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/framework2"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/framework3"
+        app:layout_constraintStart_toEndOf="@+id/framework1"
+        >
+
+        <ImageButton
+            android:id="@+id/btnGenToken"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/outline_generating_tokens_24"
+            android:text="Option 2"
+            />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/framework3"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/framework2"
+        >
+
+        <ImageButton
+            android:id="@+id/btnAddNew"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:text="Option 3"
+            android:background="@drawable/outline_add_box_24"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="0dp"
+            />
+    </FrameLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
