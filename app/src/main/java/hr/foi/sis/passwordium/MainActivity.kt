@@ -1,5 +1,6 @@
 package hr.foi.sis.passwordium
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -34,11 +35,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
     private var isFingerprintLoginEnabled: Boolean = false
     private val secProvider = "BC"
+    //private lateinit var btnQR: Button //TEST
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //TEST
+        //btnQR = findViewById(R.id.btnQR)
+        //btnQR.setOnClickListener {
+        //    val intent = Intent(this, QRScanner::class.java)
+        //    startActivity(intent)
+        //}
+        //TEST
         if (Security.getProvider(secProvider) == null) {
             Security.addProvider(BouncyCastleProvider())
         }
