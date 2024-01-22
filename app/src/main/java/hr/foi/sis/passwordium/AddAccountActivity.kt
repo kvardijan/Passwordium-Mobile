@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import hr.foi.sis.passwordium.managers.CryptingManager
 import hr.foi.sis.passwordium.managers.JwtManager
 import hr.foi.sis.passwordium.models.Account
 import hr.foi.sis.passwordium.models.AccountResponse
@@ -71,9 +72,9 @@ class AddAccountActivity: AppCompatActivity() {
             password.error = "Potrebno je upisati/generirati lozinku!"
             return
         }
-        val newAccount = Account(nameContent, urlContent,usernameContent,passwordContent)
+        val newAccount = Account(nameContent, urlContent, usernameContent, passwordContent)
+        newAccount.password = CryptingManager.encryptor(this, newAccount)
         sendAddAccountRequest(newAccount)
-    //poslati post request, ako je uspjesno prebaciti usera na MainActivity
     }
 
     private fun generatePassword() {

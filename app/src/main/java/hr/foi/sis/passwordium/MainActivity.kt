@@ -1,6 +1,8 @@
 package hr.foi.sis.passwordium
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -146,7 +148,7 @@ class MainActivity : AppCompatActivity() {
                                     if (verificationBody != null){
                                         JwtManager.saveTokens(verificationBody)
                                         JwtManager.decodeJWT()
-                                        //TODO: REROUTE TO MAIN PASSWORD VIEW
+
                                         val intent = Intent(this@MainActivity,UserAccountsActivity::class.java)
                                         startActivity(intent)
                                     }
@@ -202,6 +204,7 @@ class MainActivity : AppCompatActivity() {
                                             Log.i("response", "SUCCESSfully saved public key")
                                             val test = response.code()
                                             Log.i("response", "ovo je response code: "+test)
+                                            saveStringToSharedPreferences(this@MainActivity, "password", txtPassword)
                                             JwtManager.logout()
                                             Toast.makeText(this@MainActivity, "Omogućena prijava otiskom prsta", Toast.LENGTH_LONG)
                                                 .show()
@@ -249,7 +252,7 @@ class MainActivity : AppCompatActivity() {
                     if (body != null) {
                         JwtManager.saveTokens(body)
                         JwtManager.decodeJWT()
-                        //TODO: REROUTE TO MAIN PASSWORD VIEW
+                        saveStringToSharedPreferences(this@MainActivity, "password", txtPassword)
                         val intent = Intent(this@MainActivity,UserAccountsActivity::class.java)
                         startActivity(intent)
                     }
@@ -261,6 +264,13 @@ class MainActivity : AppCompatActivity() {
 
             }
         )
+    }
+
+    fun saveStringToSharedPreferences(context: Context, key: String, value: String) {
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("password", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString(key, value)
+        editor.apply()
     }
 
     fun checkIfPublicKeyExists(): Boolean{

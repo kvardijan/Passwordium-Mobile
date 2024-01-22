@@ -13,6 +13,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import hr.foi.sis.passwordium.managers.CryptingManager
+import hr.foi.sis.passwordium.models.Account
 import hr.foi.sis.passwordium.models.AccountResponse
 import hr.foi.sis.passwordium.models.EditAccountBody
 
@@ -70,8 +72,10 @@ class AccountAdapter(private val items: List<AccountResponse>, private val conte
 
     @SuppressLint("ServiceCast")
     private fun copyPasswordToClipboard(accountItem: AccountResponse) {
+        val account = Account(accountItem.name, accountItem.url, accountItem.username, accountItem.password)
+        val password = CryptingManager.decryptor(context, account)
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("password", accountItem.password)
+        val clip = ClipData.newPlainText("password", password)
         clipboard.setPrimaryClip(clip)
         Toast.makeText(context, "Password copied to clipboard", Toast.LENGTH_SHORT).show()
     }

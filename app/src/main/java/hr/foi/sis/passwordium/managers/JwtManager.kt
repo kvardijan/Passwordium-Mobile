@@ -113,6 +113,10 @@ object JwtManager {
         }
     }
 
+    fun giveUserName(): String {
+        return username
+    }
+
     fun logout(){
         jwt = ""
         refreshToken = ""

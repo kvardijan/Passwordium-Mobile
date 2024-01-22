@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import hr.foi.sis.passwordium.managers.CryptingManager
 import hr.foi.sis.passwordium.managers.JwtManager
 import hr.foi.sis.passwordium.models.Account
 import hr.foi.sis.passwordium.models.EditAccountBody
@@ -116,7 +117,9 @@ class EditAccountActivity: AppCompatActivity() {
             return
         }
         accountId?.let {
-            val account = EditAccountBody(it,nameContent, urlContent,usernameContent,passwordContent)
+            val newAccount = Account(nameContent, urlContent, usernameContent, passwordContent)
+            newAccount.password = CryptingManager.encryptor(this, newAccount)
+            val account = EditAccountBody(it,newAccount.name, newAccount.url ,newAccount.username, newAccount.password)
             sendEditAccountRequest(account)
         }
 
